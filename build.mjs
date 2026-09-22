@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, linkSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 
 const root = process.cwd();
@@ -16,7 +16,7 @@ for (const file of ['index.html', 'styles.css', 'app.js']) {
 }
 
 for (const file of readdirSync(resolve(root, 'assets')).filter(name => /\.(svg|png|jpe?g|webp|avif|woff2)$/i.test(name))) {
-  linkSync(resolve(root, 'assets', file), resolve(output, 'assets', file));
+  copyFileSync(resolve(root, 'assets', file), resolve(output, 'assets', file));
 }
 
 console.log('Static prototype built in dist/.');
