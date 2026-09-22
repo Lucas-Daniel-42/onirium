@@ -15,7 +15,7 @@ for (const file of ['index.html', 'styles.css', 'app.js']) {
   copyFileSync(resolve(root, file), resolve(output, file));
 }
 
-for (const file of readdirSync(resolve(root, 'assets'))) {
+for (const file of readdirSync(resolve(root, 'assets')).filter(name => /\.(svg|png|jpe?g|webp|avif|woff2)$/i.test(name))) {
   linkSync(resolve(root, 'assets', file), resolve(output, 'assets', file));
 }
 
