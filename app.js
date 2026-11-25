@@ -150,83 +150,45 @@
 
   const posterGallery = document.querySelector('[data-posters]');
   if (posterGallery) {
-    const posterTrack = posterGallery.querySelector('[data-poster-track]');
-    const posters = [...posterGallery.querySelectorAll('.poster-card')];
-    const posterPrevious = posterGallery.querySelector('[data-poster-prev]');
-    const posterNext = posterGallery.querySelector('[data-poster-next]');
-    const posterCurrent = posterGallery.querySelector('[data-poster-current]');
-    const posterProgress = posterGallery.querySelector('[data-poster-progress]');
-    const posterTitle = posterGallery.querySelector('[data-poster-title]');
-    const posterSubtitle = posterGallery.querySelector('[data-poster-subtitle]');
-    const posterStatus = posterGallery.querySelector('[data-poster-status]');
-    let posterIndex = 0;
-    let posterTimer = 0;
-    let posterAnnouncement;
-    let postersVisible = true;
+    const posters = [...posterGallery.querySelectorAll('[data-poster-card]')];
+    const modal = document.querySelector('.poster-modal');
+    const modalImage = modal.querySelector('[data-poster-modal-image]');
+    const modalClose = modal.querySelector('.poster-modal-close');
+    let lastPosterTrigger = null;
 
-    function setPoster(nextIndex, shouldScroll = true) {
-      posterIndex = (nextIndex + posters.length) % posters.length;
-      const poster = posters[posterIndex];
-      posters.forEach((item, itemIndex) => {
-        item.classList.toggle('is-active', itemIndex === posterIndex);
-        item.setAttribute('aria-hidden', String(itemIndex !== posterIndex));
-      });
-      posterCurrent.textContent = String(posterIndex + 1).padStart(2, '0');
-      posterProgress.textContent = String(posterIndex + 1).padStart(2, '0');
-      posterTitle.textContent = poster.dataset.posterCardTitle;
-      posterSubtitle.textContent = poster.dataset.posterCardSubtitle;
-      clearTimeout(posterAnnouncement);
-      posterAnnouncement = setTimeout(() => {
-        posterStatus.textContent = 'Poster ' + (posterIndex + 1) + ' de ' + posters.length + ': ' + poster.dataset.posterCardTitle + ', ' + poster.dataset.posterCardSubtitle;
-      }, 180);
-      if (shouldScroll && posterTrack.scrollWidth > posterTrack.clientWidth + 4) {
-        const left = poster.offsetLeft - (posterTrack.clientWidth - poster.offsetWidth) / 2;
-        posterTrack.scrollTo({ left, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-      }
+    function openPoster(poster) {
+      lastPosterTrigger = poster;
+      modalImage.src = poster.dataset.posterSrc;
+      modalImage.alt = poster.dataset.posterAlt;
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
     }
 
-    function startPosterTimer() {
-      window.clearInterval(posterTimer);
-      posterTimer = reducedMotion.matches ? 0 : window.setInterval(() => {
-        if (postersVisible && !document.hidden) setPoster(posterIndex + 1);
-      }, 5600);
+    function closePoster() {
+      if (!modal.open) return;
+      modal.close();
     }
 
-    posterPrevious.addEventListener('click', () => { setPoster(posterIndex - 1); startPosterTimer(); });
-    posterNext.addEventListener('click', () => { setPoster(posterIndex + 1); startPosterTimer(); });
-    posterGallery.addEventListener('mouseenter', () => { window.clearInterval(posterTimer); });
-    posterGallery.addEventListener('mouseleave', startPosterTimer);
-    posterGallery.addEventListener('focusin', () => { window.clearInterval(posterTimer); });
-    posterGallery.addEventListener('focusout', event => {
-      if (!posterGallery.contains(event.relatedTarget)) startPosterTimer();
+    posters.forEach(poster => {
+      poster.addEventListener('click', () => openPoster(poster));
     });
-    posterGallery.querySelector('.poster-stage').addEventListener('keydown', event => {
-      if (event.target.closest('button')) return;
-      const targets = { ArrowLeft: posterIndex - 1, ArrowRight: posterIndex + 1, Home: 0, End: posters.length - 1 };
-      if (!(event.key in targets)) return;
-      event.preventDefault();
-      setPoster(targets[event.key]);
-      startPosterTimer();
+    modalClose.addEventListener('click', closePoster);
+    modal.addEventListener('click', event => {
+      if (event.target === modal) closePoster();
     });
-    posterTrack.addEventListener('scroll', () => {
-      if (posterTrack.scrollWidth <= posterTrack.clientWidth + 4) return;
-      const center = posterTrack.scrollLeft + posterTrack.clientWidth / 2;
-      let closest = posterIndex;
-      let distanceToCenter = Infinity;
-      posters.forEach((poster, itemIndex) => {
-        const distanceFromCenter = Math.abs(poster.offsetLeft + poster.offsetWidth / 2 - center);
-        if (distanceFromCenter < distanceToCenter) { closest = itemIndex; distanceToCenter = distanceFromCenter; }
-      });
-      if (closest !== posterIndex) setPoster(closest, false);
-    }, { passive: true });
+    modal.addEventListener('close', () => {
+      document.body.style.overflow = '';
+      lastPosterTrigger?.focus();
+    });
+
     const posterObserver = new IntersectionObserver(entries => {
-      postersVisible = entries.some(entry => entry.isIntersecting);
-      if (postersVisible) startPosterTimer(); else window.clearInterval(posterTimer);
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        posterObserver.unobserve(entry.target);
+      });
     }, { threshold: .18 });
-    posterObserver.observe(posterGallery);
-    reducedMotion.addEventListener('change', startPosterTimer);
-    setPoster(0, false);
-    startPosterTimer();
+    posters.forEach(poster => posterObserver.observe(poster));
   }
 
   // Progressive enhancement: content and gallery work even if the animation library is unavailable.
