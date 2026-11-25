@@ -26,6 +26,7 @@
     <a class="wordmark" href="#hero" aria-label="Onirium, início">ONIRIUM</a>
     <nav class="desktop-nav" aria-label="Navegação principal">
       <a href="#discover">Onirium</a>
+      <a href="#posters">Posters</a>
       <a href="#world"> Mundo</a>
       <a href="#characters">Personagens</a>
       <a href="#about">Sobre</a>
@@ -34,7 +35,7 @@
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
   </header>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação mobile" hidden>
-    <a href="#hero">Início</a><a href="#discover">Onirium</a><a href="#world">World</a>
+    <a href="#hero">Início</a><a href="#discover">Onirium</a><a href="#posters">Posters</a><a href="#world">World</a>
     <a href="#characters">Personagens</a><a href="#about">About</a>
   </nav>
 
@@ -66,6 +67,40 @@
         </div>
         <figcaption><span>Um olhar para Onirium</span><a href="#world">Conheça os cenários <span aria-hidden="true">↘</span></a></figcaption>
       </figure>
+    </section>
+
+    <section class="posters section-pad" id="posters" aria-labelledby="posters-title" data-posters>
+      <div class="section-intro reveal">
+        <p class="eyebrow">Posters</p>
+        <h2 id="posters-title">Três portas<br />para dentro.</h2>
+        <p>Uma coleção de imagens para atravessar os estados de Onirium.</p>
+      </div>
+      <div class="poster-stage" role="region" aria-label="Posters de Onirium" tabindex="0">
+        <div class="poster-track" data-poster-track>
+          <figure class="poster-card is-active" data-poster-card-title="O bosque" data-poster-card-subtitle="Depressão · silêncio e memória">
+            <div class="poster-frame"><img src="./assets/poster-depressao.png" alt="Poster em tons de cinza com uma menina caminhando por uma floresta" width="1080" height="1920" loading="lazy" /><span class="poster-watercolor" aria-hidden="true"></span></div>
+            <figcaption><span>01 · O bosque</span><span>Depressão</span></figcaption>
+          </figure>
+          <figure class="poster-card" data-poster-card-title="A pressão" data-poster-card-subtitle="Ansiedade · ruído e vigília">
+            <div class="poster-frame"><img src="./assets/poster-ansiedade.png" alt="Poster vermelho com uma figura cercada por olhos e mãos" width="1080" height="1920" loading="lazy" /><span class="poster-watercolor" aria-hidden="true"></span></div>
+            <figcaption><span>02 · A pressão</span><span>Ansiedade</span></figcaption>
+          </figure>
+          <figure class="poster-card" data-poster-card-title="A passagem" data-poster-card-subtitle="Onirium · sonho e descoberta">
+            <div class="poster-frame"><img src="./assets/poster-onirium.png" alt="Poster colorido com duas mãos envolvendo uma flor luminosa" width="876" height="1314" loading="lazy" /><span class="poster-watercolor" aria-hidden="true"></span></div>
+            <figcaption><span>03 · A passagem</span><span>Onirium</span></figcaption>
+          </figure>
+        </div>
+        <div class="poster-toolbar">
+          <div class="poster-meta"><span data-poster-title>O bosque</span><span data-poster-subtitle>Depressão · silêncio e memória</span></div>
+          <div class="poster-controls">
+            <button type="button" data-poster-prev aria-label="Poster anterior">←</button>
+            <span class="poster-counter"><span data-poster-current>01</span><span class="muted"> / 03</span></span>
+            <button type="button" data-poster-next aria-label="Próximo poster">→</button>
+          </div>
+          <span class="poster-hint">Troca automática · <span data-poster-progress>01</span></span>
+        </div>
+        <p class="sr-only" role="status" data-poster-status>Poster 1 de 3: O bosque, Depressão · silêncio e memória</p>
+      </div>
     </section>
 
     <section class="world" id="world" aria-labelledby="world-title">
